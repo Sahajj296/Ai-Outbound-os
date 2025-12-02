@@ -28,3 +28,9 @@ pnpm-debug.log*
 # Next.js Build Output
 /out
 
+# Database files
+/data
+*.db
+*.sqlite
+*.sqlite3
+
