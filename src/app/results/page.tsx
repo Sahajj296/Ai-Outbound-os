@@ -13,7 +13,7 @@ import ScoreExplanationSection from "@/components/ScoreExplanationSection";
 export default function ResultsPage() {
   const router = useRouter();
   const [selectedLead, setSelectedLead] = useState<ProcessedLead | null>(null);
-  const [leads, setLeads] = useState<ProcessedLead[]>([]);
+  const [leads, setLeads] = useState<any[]>([]);
   const [filteredLeads, setFilteredLeads] = useState<ProcessedLead[]>([]);
   const [stats, setStats] = useState({
     total: 0,
@@ -23,114 +23,47 @@ export default function ResultsPage() {
     averageScore: 0,
   });
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const [sortByHighest, setSortByHighest] = useState(true);
   const [statusFilter, setStatusFilter] = useState<'all' | 'hot' | 'warm' | 'cold'>('all');
 
+  // SSR-safe browser check
+  const isBrowser = typeof window !== "undefined";
+
   useEffect(() => {
-    loadLeads();
+    if (typeof window !== "undefined") loadLeads();
   }, []);
 
-  const loadLeads = async () => {
-    setIsLoading(true);
-    setError(null);
-    
+  // --- safeGetLeads helper ---
+  function safeGetLeads() {
     try {
-      // First try to load from localStorage (for newly processed leads)
-      try {
-        const storedData = localStorage.getItem('processedLeads');
-        
-        if (storedData) {
-          try {
-            const data: ProcessLeadsResponse = JSON.parse(storedData);
-            
-            if (data.success && data.leads && Array.isArray(data.leads) && data.leads.length > 0) {
-              const sortedLeads = [...data.leads].sort((a, b) => b.score - a.score);
-              setLeads(sortedLeads);
-              setFilteredLeads(sortedLeads);
-              setStats({
-                total: data.total || sortedLeads.length,
-                hot: data.hot || 0,
-                warm: data.warm || 0,
-                cold: data.cold || 0,
-                averageScore: data.averageScore || 0,
-              });
-              setIsLoading(false);
-              return;
-            }
-          } catch (parseError) {
-            console.warn('Failed to parse localStorage data:', parseError);
-            // Clear invalid data
-            localStorage.removeItem('processedLeads');
-          }
-        }
-      } catch (storageError) {
-        console.warn('localStorage access error:', storageError);
-        // Continue to try API fallback
-      }
-      
-      // Fallback: Try to load from database
-      try {
-        const response = await fetch('/api/leads?stats=true');
-        if (response.ok) {
-          const statsData = await response.json();
-          const leadsResponse = await fetch('/api/leads');
-          if (leadsResponse.ok) {
-            const leadsData = await leadsResponse.json();
-            if (leadsData.leads && Array.isArray(leadsData.leads) && leadsData.leads.length > 0) {
-              const sortedLeads = [...leadsData.leads].sort((a, b) => b.score - a.score);
-              setLeads(sortedLeads);
-              setFilteredLeads(sortedLeads);
-              setStats(statsData || {
-                total: sortedLeads.length,
-                hot: 0,
-                warm: 0,
-                cold: 0,
-                averageScore: 0,
-              });
-              setIsLoading(false);
-              return;
-            }
-          } else {
-            // Handle API error responses
-            if (leadsResponse.status >= 500) {
-              setError('Server error. Please try again later.');
-            } else if (leadsResponse.status === 404) {
-              setError('No leads data found. Please upload leads first.');
-            } else {
-              setError('Failed to load leads. Please try again.');
-            }
-          }
-        } else {
-          if (response.status >= 500) {
-            setError('Server error. Please try again later.');
-          } else {
-            setError('No leads data found. Please upload leads first.');
-          }
-        }
-      } catch (fetchError) {
-        // Handle network errors
-        if (fetchError instanceof TypeError && fetchError.message.includes('fetch')) {
-          setError('Network error. Please check your internet connection and try again.');
-        } else {
-          console.warn('Failed to load from database:', fetchError);
-          setError('No leads data found. Please upload leads first.');
-        }
-      }
-      
-      // No data found - this is not an error, just empty state
-      if (!error) {
-        setError(null); // Clear any error, show empty state instead
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
-      setError(`Failed to load leads data: ${errorMessage}. Please upload leads again.`);
-      console.error('Error loading leads:', err);
-    } finally {
-      setIsLoading(false);
+      if (typeof window === "undefined") return [];
+      const raw = localStorage.getItem("processedLeads");
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      console.error("Failed to parse leads:", e);
+      return [];
     }
-  };
+  }
+
+  async function loadLeads() {
+    if (typeof window === "undefined") return;
+    try {
+      const loaded = safeGetLeads();
+      if (!loaded || loaded.length === 0) {
+        setLeads([]);
+        setLoading(false);
+        return;
+      }
+      setLeads(loaded);
+    } catch (err) {
+      console.error("Results load error:", err);
+      setLeads([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleExport = async (format: 'csv' | 'excel' = 'csv') => {
     if (filteredLeads.length === 0) {
@@ -160,18 +93,19 @@ export default function ResultsPage() {
         throw new Error('Export file is empty. Please try again.');
       }
       
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `leads-export-${new Date().toISOString().split('T')[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      
-      // Cleanup
-      setTimeout(() => {
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      }, 100);
+      if (isBrowser) {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `leads-export-${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        // Cleanup
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        }, 100);
+      }
     } catch (err) {
       let errorMessage = 'Failed to export leads.';
       
@@ -220,7 +154,7 @@ export default function ResultsPage() {
   const warmLeads = stats.warm;
   const avgScore = stats.averageScore;
 
-  if (error && leads.length === 0 && !isLoading) {
+  if (error && leads.length === 0 && !loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
         <div className="pt-4">
@@ -248,7 +182,7 @@ export default function ResultsPage() {
     );
   }
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
         <div className="pt-4">
@@ -263,7 +197,7 @@ export default function ResultsPage() {
     );
   }
 
-  if (leads.length === 0 && !error) {
+  if (!loading && leads.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
         <div className="pt-4">
@@ -340,7 +274,7 @@ export default function ResultsPage() {
           )}
 
           {/* Empty State */}
-          {leads.length === 0 && !isLoading && !error && (
+          {leads.length === 0 && !loading && !error && (
             <div className="w-full max-w-xl mx-auto bg-gray-50 p-4 rounded-xl shadow-md text-center mb-6">
               <p className="font-semibold">No leads available yet</p>
               <p className="text-sm mt-1">Upload a CSV or import from URL to see results</p>
@@ -492,9 +426,7 @@ export default function ResultsPage() {
                                   {lead.status.toUpperCase()}
                                 </span>
                               </TableCell>
-                              <TableCell className="text-sm text-slate-600 max-w-md">
-                                {lead.notes || 'No explanation available'}
-                              </TableCell>
+                              <TableCell className="text-sm">{lead.notes ?? "No explanation available"}</TableCell>
                             </TableRow>
                           ))
                         )}

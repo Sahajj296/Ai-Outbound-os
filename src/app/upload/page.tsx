@@ -20,6 +20,8 @@ import { RawLead } from "@/utils/types";
 export default function UploadPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // SSR-safe window check
+  const isBrowser = typeof window !== "undefined";
   const [uploadType, setUploadType] = useState<'csv' | 'url'>('csv');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [url, setUrl] = useState('');
@@ -312,7 +314,22 @@ export default function UploadPage() {
       const processData = await processResponse.json();
 
       // Store results in localStorage to pass to results page
-      localStorage.setItem('processedLeads', JSON.stringify(processData));
+      if (isBrowser) {
+        try {
+          localStorage.setItem('processedLeads', JSON.stringify(processData));
+        } catch (e) {
+          console.error('Failed to save processed leads:', e);
+          setError('Could not save results. Please check your browser settings.');
+          setIsProcessing(false);
+          setProgress(null);
+          return;
+        }
+      } else {
+        setError('Client-side storage is unavailable.');
+        setIsProcessing(false);
+        setProgress(null);
+        return;
+      }
 
       setProgress({ stage: 'Complete!', progress: 100 });
 
