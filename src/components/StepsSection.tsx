@@ -1,3 +1,5 @@
+"use client";
+
 export default function StepsSection() {
   return (
     <div className="mt-12 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">

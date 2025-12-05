@@ -32,7 +32,8 @@ export default function ResultsPage() {
   const isBrowser = typeof window !== "undefined";
 
   useEffect(() => {
-    if (typeof window !== "undefined") loadLeads();
+    if (!isBrowser) return;
+    loadLeads();
   }, []);
 
   // --- safeGetLeads helper ---
@@ -48,10 +49,10 @@ export default function ResultsPage() {
   }
 
   async function loadLeads() {
-    if (typeof window === "undefined") return;
+    if (!isBrowser) return;
     try {
       const loaded = safeGetLeads();
-      if (!loaded || loaded.length === 0) {
+      if (!Array.isArray(loaded) || loaded.length === 0) {
         setLeads([]);
         setLoading(false);
         return;

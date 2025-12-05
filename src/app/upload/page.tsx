@@ -148,6 +148,7 @@ export default function UploadPage() {
   };
 
   const handleProcessLeads = async () => {
+    if (!isBrowser) return;
     // Check for empty state
     if (uploadType === 'csv' && !selectedFile) {
       setShowEmptyState(true);
@@ -314,18 +315,14 @@ export default function UploadPage() {
       const processData = await processResponse.json();
 
       // Store results in localStorage to pass to results page
-      if (isBrowser) {
-        try {
-          localStorage.setItem('processedLeads', JSON.stringify(processData));
-        } catch (e) {
-          console.error('Failed to save processed leads:', e);
-          setError('Could not save results. Please check your browser settings.');
-          setIsProcessing(false);
-          setProgress(null);
-          return;
-        }
-      } else {
-        setError('Client-side storage is unavailable.');
+      if (!isBrowser) {
+        throw new Error('Client-side storage is unavailable.');
+      }
+      try {
+        localStorage.setItem('processedLeads', JSON.stringify(processData));
+      } catch (e) {
+        console.error('Failed to save processed leads:', e);
+        setError('Could not save results. Please check your browser settings.');
         setIsProcessing(false);
         setProgress(null);
         return;
@@ -339,6 +336,7 @@ export default function UploadPage() {
       // Navigate to results page
       router.push('/results');
     } catch (err) {
+      console.error(err);
       let errorMessage = 'An unexpected error occurred while processing leads.';
       
       if (err instanceof Error) {
@@ -355,7 +353,6 @@ export default function UploadPage() {
       setError(errorMessage);
       setIsProcessing(false);
       setProgress(null);
-      console.error('Error processing leads:', err);
     }
   };
 
