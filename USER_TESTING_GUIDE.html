@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Testing Guide - Lead Generation Specialists</title>
+    <style>
+        @media print {
+            body { margin: 0; }
+            .no-print { display: none; }
+            .page-break { page-break-after: always; }
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background: #fff;
+        }
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #2563eb;
+            margin-top: 30px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #1e40af;
+            margin-top: 25px;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 5px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+        .checkbox {
+            margin-right: 8px;
+        }
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 4px;
+        }
+        .success {
+            color: #059669;
+            font-weight: 600;
+        }
+        .warning {
+            color: #d97706;
+            font-weight: 600;
+        }
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #f3f4f6;
+            font-weight: 600;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #e5e7eb;
+            margin: 30px 0;
+        }
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .print-button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+
+    <h1>👥 User Testing Guide - Lead Generation Specialists</h1>
+    <p><strong>Guide for conducting user testing sessions with lead generation professionals.</strong></p>
+
+    <hr>
+
+    <h2>🎯 Testing Objectives</h2>
+    <p><strong>Primary Goals:</strong></p>
+    <ul>
+        <li>Validate the workflow matches real-world lead generation processes</li>
+        <li>Identify usability issues from domain experts</li>
+        <li>Gather feedback on scoring accuracy and relevance</li>
+        <li>Test with real lead data scenarios</li>
+        <li>Discover missing features or pain points</li>
+    </ul>
+
+    <hr>
+
+    <h2>✅ Pre-Testing Checklist</h2>
+
+    <h3>Before Inviting Testers</h3>
+    <ul>
+        <li><span class="checkbox">☐</span> <strong>App is fully functional</strong> - All features work without crashes</li>
+        <li><span class="checkbox">☐</span> <strong>Sample data ready</strong> - Have realistic CSV files prepared</li>
+        <li><span class="checkbox">☐</span> <strong>Test environment stable</strong> - Dev server running smoothly</li>
+        <li><span class="checkbox">☐</span> <strong>Clear instructions</strong> - Testing guide prepared</li>
+        <li><span class="checkbox">☐</span> <strong>Feedback form ready</strong> - Way to collect structured feedback</li>
+        <li><span class="checkbox">☐</span> <strong>Time allocated</strong> - 30-45 minutes per tester</li>
+    </ul>
+
+    <h3>What to Prepare</h3>
+    <ol>
+        <li><strong>Sample Lead Files</strong> (2-3 different scenarios):
+            <ul>
+                <li>Small dataset (10-20 leads) - Quick testing</li>
+                <li>Medium dataset (50-100 leads) - Realistic scenario</li>
+                <li>Mixed quality leads - Some with missing data</li>
+            </ul>
+        </li>
+        <li><strong>Test Scenarios</strong>:
+            <ul>
+                <li>Scenario A: Upload CSV and review results</li>
+                <li>Scenario B: Import from URL (if applicable)</li>
+                <li>Scenario C: Filter and export specific leads</li>
+            </ul>
+        </li>
+        <li><strong>Questions to Ask</strong>:
+            <ul>
+                <li>Does the scoring make sense for your workflow?</li>
+                <li>What information is missing?</li>
+                <li>What would make this more useful?</li>
+                <li>Any confusing parts?</li>
+            </ul>
+        </li>
+    </ol>
+
+    <hr>
+
+    <h2>📋 Testing Scenarios</h2>
+
+    <h3>Scenario 1: Basic Lead Upload & Review (15 min)</h3>
+    <p><strong>Instructions for Tester:</strong></p>
+    <ol>
+        <li>Go to homepage</li>
+        <li>Upload a CSV file with leads</li>
+        <li>Review the scored results</li>
+        <li>Check if scores align with your expectations</li>
+    </ol>
+
+    <p><strong>What to Observe:</strong></p>
+    <ul>
+        <li><span class="checkbox">☐</span> Can they easily find the upload button?</li>
+        <li><span class="checkbox">☐</span> Do they understand the scoring explanation?</li>
+        <li><span class="checkbox">☐</span> Are the results useful/actionable?</li>
+        <li><span class="checkbox">☐</span> Any confusion about the interface?</li>
+    </ul>
+
+    <p><strong>Questions to Ask:</strong></p>
+    <ul>
+        <li>"Does this scoring match how you'd prioritize leads?"</li>
+        <li>"What information do you need that's missing?"</li>
+        <li>"Is the 'Reason' column helpful?"</li>
+    </ul>
+
+    <hr>
+
+    <h3>Scenario 2: Filtering & Export (10 min)</h3>
+    <p><strong>Instructions for Tester:</strong></p>
+    <ol>
+        <li>Filter leads by status (Hot/Warm/Cold)</li>
+        <li>Sort by score</li>
+        <li>Export filtered results</li>
+    </ol>
+
+    <p><strong>What to Observe:</strong></p>
+    <ul>
+        <li><span class="checkbox">☐</span> Can they easily filter leads?</li>
+        <li><span class="checkbox">☐</span> Do they understand the status categories?</li>
+        <li><span class="checkbox">☐</span> Is the export process clear?</li>
+        <li><span class="checkbox">☐</span> Would they use this in their workflow?</li>
+    </ul>
+
+    <p><strong>Questions to Ask:</strong></p>
+    <ul>
+        <li>"Would you typically filter by status or score?"</li>
+        <li>"What other filters would be useful?"</li>
+        <li>"Is the export format what you need?"</li>
+    </ul>
+
+    <hr>
+
+    <h3>Scenario 3: Error Handling (5 min)</h3>
+    <p><strong>Instructions for Tester:</strong></p>
+    <ol>
+        <li>Try uploading an invalid file</li>
+        <li>Try uploading without a file</li>
+        <li>Enter an invalid URL</li>
+    </ol>
+
+    <p><strong>What to Observe:</strong></p>
+    <ul>
+        <li><span class="checkbox">☐</span> Are error messages clear?</li>
+        <li><span class="checkbox">☐</span> Do they know how to fix errors?</li>
+        <li><span class="checkbox">☐</span> Is the recovery process obvious?</li>
+    </ul>
+
+    <p><strong>Questions to Ask:</strong></p>
+    <ul>
+        <li>"Were the error messages helpful?"</li>
+        <li>"Did you know what to do next?"</li>
+    </ul>
+
+    <hr>
+
+    <h3>Scenario 4: Real-World Workflow (15 min)</h3>
+    <p><strong>Instructions for Tester:</strong></p>
+    <ol>
+        <li>Use your own lead data (if comfortable)</li>
+        <li>Go through your typical workflow</li>
+        <li>Identify what works and what doesn't</li>
+    </ol>
+
+    <p><strong>What to Observe:</strong></p>
+    <ul>
+        <li><span class="checkbox">☐</span> Does it fit their actual process?</li>
+        <li><span class="checkbox">☐</span> What features are missing?</li>
+        <li><span class="checkbox">☐</span> What would make them use this daily?</li>
+    </ul>
+
+    <p><strong>Questions to Ask:</strong></p>
+    <ul>
+        <li>"How does this compare to your current tools?"</li>
+        <li>"What's the biggest pain point this solves?"</li>
+        <li>"What's missing that would make this essential?"</li>
+    </ul>
+
+    <hr>
+
+    <h2>📊 Feedback Collection Template</h2>
+
+    <div class="info-box">
+        <h3>Quick Feedback Form</h3>
+        <p><strong>Tester Name:</strong> ________________</p>
+        <p><strong>Date:</strong> ________________</p>
+        <p><strong>Role:</strong> ________________ (e.g., Sales Manager, Lead Gen Specialist)</p>
+
+        <p><strong>1. Overall Experience (1-5):</strong></p>
+        <ul>
+            <li><span class="checkbox">☐</span> 1 - Very Poor</li>
+            <li><span class="checkbox">☐</span> 2 - Poor</li>
+            <li><span class="checkbox">☐</span> 3 - Neutral</li>
+            <li><span class="checkbox">☐</span> 4 - Good</li>
+            <li><span class="checkbox">☐</span> 5 - Excellent</li>
+        </ul>
+
+        <p><strong>2. Ease of Use (1-5):</strong></p>
+        <ul>
+            <li><span class="checkbox">☐</span> 1 - Very Difficult</li>
+            <li><span class="checkbox">☐</span> 5 - Very Easy</li>
+        </ul>
+
+        <p><strong>3. Scoring Accuracy:</strong></p>
+        <p>- Does the scoring make sense? Yes / No / Partially</p>
+        <p>- Comments: ________________</p>
+
+        <p><strong>4. Most Useful Feature:</strong> ________________</p>
+        <p><strong>5. Most Confusing Part:</strong> ________________</p>
+        <p><strong>6. Missing Features:</strong> ________________</p>
+        <p><strong>7. Would You Use This?</strong> Yes / No / Maybe</p>
+        <p>Why? ________________</p>
+        <p><strong>8. Biggest Pain Point Solved:</strong> ________________</p>
+        <p><strong>9. Biggest Pain Point Remaining:</strong> ________________</p>
+        <p><strong>10. Additional Comments:</strong> ________________</p>
+    </div>
+
+    <hr>
+
+    <h2>🎤 Interview Questions (Optional Deep Dive)</h2>
+
+    <h3>About Scoring</h3>
+    <ul>
+        <li>"How do you currently prioritize leads?"</li>
+        <li>"What factors matter most in lead quality?"</li>
+        <li>"Does our scoring align with your process?"</li>
+        <li>"What scoring factors are we missing?"</li>
+    </ul>
+
+    <h3>About Workflow</h3>
+    <ul>
+        <li>"Walk me through your current lead processing workflow"</li>
+        <li>"Where would this tool fit in?"</li>
+        <li>"What tools do you use now?"</li>
+        <li>"What would make you switch?"</li>
+    </ul>
+
+    <h3>About Features</h3>
+    <ul>
+        <li>"What's the most important feature for you?"</li>
+        <li>"What feature is missing?"</li>
+        <li>"What would make this a daily-use tool?"</li>
+        <li>"Any integrations you need?"</li>
+    </ul>
+
+    <hr>
+
+    <h2>🔍 What to Watch For</h2>
+
+    <h3 class="success">Positive Signals ✅</h3>
+    <ul>
+        <li>Tester completes tasks without asking for help</li>
+        <li>Tester says "This is useful" or "I'd use this"</li>
+        <li>Tester asks "Can I use my own data?"</li>
+        <li>Tester suggests small tweaks (not major changes)</li>
+        <li>Tester understands scoring without explanation</li>
+    </ul>
+
+    <h3 class="warning">Red Flags 🚩</h3>
+    <ul>
+        <li>Tester gets stuck and can't proceed</li>
+        <li>Tester says "I don't understand this"</li>
+        <li>Tester asks "Why would I use this?"</li>
+        <li>Tester suggests major workflow changes</li>
+        <li>Tester can't find basic features</li>
+    </ul>
+
+    <hr>
+
+    <h2>📝 Post-Testing Actions</h2>
+
+    <h3>Immediate (During/Right After)</h3>
+    <ul>
+        <li><span class="checkbox">☐</span> Take notes on what confused them</li>
+        <li><span class="checkbox">☐</span> Note any bugs or crashes</li>
+        <li><span class="checkbox">☐</span> Record feature requests</li>
+        <li><span class="checkbox">☐</span> Ask follow-up questions</li>
+    </ul>
+
+    <h3>Short-term (Within 24 hours)</h3>
+    <ul>
+        <li><span class="checkbox">☐</span> Compile feedback from all testers</li>
+        <li><span class="checkbox">☐</span> Identify common themes</li>
+        <li><span class="checkbox">☐</span> Prioritize fixes (critical vs. nice-to-have)</li>
+        <li><span class="checkbox">☐</span> Create action items</li>
+    </ul>
+
+    <h3>Before Next Round</h3>
+    <ul>
+        <li><span class="checkbox">☐</span> Fix critical issues</li>
+        <li><span class="checkbox">☐</span> Implement high-priority features</li>
+        <li><span class="checkbox">☐</span> Update based on feedback</li>
+        <li><span class="checkbox">☐</span> Prepare for round 2 testing</li>
+    </ul>
+
+    <hr>
+
+    <h2>🎯 Success Criteria</h2>
+
+    <p><strong>Testing is successful if:</strong></p>
+    <ul>
+        <li class="success">✅ Testers can complete core tasks without major confusion</li>
+        <li class="success">✅ Scoring makes sense to domain experts</li>
+        <li class="success">✅ Testers see value in the tool</li>
+        <li class="success">✅ Feedback is actionable (not "everything is broken")</li>
+        <li class="success">✅ You identify 3-5 key improvements</li>
+    </ul>
+
+    <p><strong>If testers struggle:</strong></p>
+    <ul>
+        <li>Don't panic - this is valuable feedback!</li>
+        <li>Focus on the most critical issues first</li>
+        <li>Consider a second round of testing after fixes</li>
+    </ul>
+
+    <hr>
+
+    <h2>💡 Tips for Conducting Tests</h2>
+
+    <h3 class="success">Do's ✅</h3>
+    <ul>
+        <li><strong>Let them explore</strong> - Don't guide too much</li>
+        <li><strong>Watch silently</strong> - See where they struggle</li>
+        <li><strong>Ask open questions</strong> - "What do you think?" not "Do you like it?"</li>
+        <li><strong>Take notes</strong> - You'll forget details</li>
+        <li><strong>Be neutral</strong> - Don't defend, just listen</li>
+        <li><strong>Test with real data</strong> - More authentic experience</li>
+    </ul>
+
+    <h3 class="warning">Don'ts ❌</h3>
+    <ul>
+        <li><strong>Don't help too much</strong> - Let them figure it out</li>
+        <li><strong>Don't explain features</strong> - See if UI is self-explanatory</li>
+        <li><strong>Don't take it personally</strong> - Feedback is about the product</li>
+        <li><strong>Don't rush</strong> - Give them time to explore</li>
+        <li><strong>Don't test with too many people</strong> - 3-5 specialists is enough</li>
+    </ul>
+
+    <hr>
+
+    <h2>📞 Quick Reference</h2>
+
+    <p><strong>Key Questions to Always Ask:</strong></p>
+    <ol>
+        <li>"What do you think of the scoring?"</li>
+        <li>"What's missing?"</li>
+        <li>"Would you use this?"</li>
+        <li>"What would make it better?"</li>
+    </ol>
+
+    <p><strong>Red Flags to Watch:</strong></p>
+    <ul>
+        <li>Can't complete basic tasks</li>
+        <li>Doesn't understand core features</li>
+        <li>No clear value proposition</li>
+    </ul>
+
+    <p><strong>Success Indicators:</strong></p>
+    <ul>
+        <li>Completes tasks independently</li>
+        <li>Sees value in the tool</li>
+        <li>Provides constructive feedback</li>
+    </ul>
+
+    <hr>
+
+    <div class="info-box">
+        <h2>🚀 Ready to Test?</h2>
+        <p><strong>Before you start:</strong></p>
+        <ol>
+            <li>✅ App is stable and functional</li>
+            <li>✅ Sample data prepared</li>
+            <li>✅ Feedback form ready</li>
+            <li>✅ Testers recruited</li>
+            <li>✅ Time scheduled</li>
+        </ol>
+        <p><strong>Good luck! Remember: The goal is to learn, not to prove the app is perfect.</strong></p>
+    </div>
+
+</body>
+</html>
+

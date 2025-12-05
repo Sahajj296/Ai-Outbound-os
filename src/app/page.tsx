@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import StepsSection from "@/components/StepsSection";
 
 export default function Home() {
   const router = useRouter();
@@ -26,18 +27,21 @@ export default function Home() {
           <p
             className="text-xl text-slate-600 mb-12 max-w-2xl mx-auto leading-relaxed"
           >
-            Intelligent lead scoring and prioritization powered by AI. Upload your leads,
-            get instant insights, and focus on prospects that matter most.
+            Score and prioritize your leads instantly with AI — no CRM needed.
           </p>
 
-          <div>
+          <div className="flex flex-col items-center">
             <Button
               size="lg"
-              className="text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="text-xl font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
               onClick={() => router.push('/upload')}
             >
               Upload Leads <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
+            <p className="text-sm text-slate-500 mt-4 max-w-md">
+              Supports CSV up to 10MB • Public URL import • AI explanations included
+            </p>
+            <StepsSection />
           </div>
 
           <div

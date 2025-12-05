@@ -1,0 +1,43 @@
+Subject: Help Us Test Our AI Lead Scoring Tool - 30 Minutes
+
+Hi [Tester Name],
+
+I'm reaching out because I'd love your expert feedback on a new AI-powered lead scoring tool we've built. As a lead generation specialist, your insights would be incredibly valuable!
+
+📋 What We're Asking:
+- 30-45 minutes of your time
+- Test the tool with sample lead data
+- Share your honest feedback
+
+🎯 What You'll Test:
+- Upload and score leads
+- Review AI-generated prioritization
+- Filter and export results
+- Share what works and what doesn't
+
+🔗 Access the Tool:
+[YOUR APP URL HERE]
+Example: https://your-app-name.vercel.app
+
+📄 Instructions:
+I've attached detailed instructions (TESTER_INSTRUCTIONS.html or PDF) that walk you through everything step-by-step.
+
+💬 How to Give Feedback:
+- Think out loud as you use it
+- Share what's confusing or helpful
+- Tell us what's missing
+- No right or wrong answers - we're learning!
+
+⏰ When:
+Anytime that works for you! Just let me know when you've completed it, or if you have questions.
+
+🙏 Why Your Feedback Matters:
+Your expertise will help us build something that actually works for lead generation professionals like you.
+
+Thank you so much for your time!
+
+Best regards,
+[Your Name]
+
+P.S. Feel free to use your own lead data if you're comfortable - that would make the testing even more valuable!
+
