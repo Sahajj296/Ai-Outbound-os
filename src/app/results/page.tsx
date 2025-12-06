@@ -1,6 +1,5 @@
-'use client';
-
-import { useState, useEffect } from "react";
+"use client";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,56 +11,38 @@ import ScoreExplanationSection from "@/components/ScoreExplanationSection";
 
 export default function ResultsPage() {
   const router = useRouter();
-  const [selectedLead, setSelectedLead] = useState<ProcessedLead | null>(null);
-  const [leads, setLeads] = useState<any[]>([]);
-  const [filteredLeads, setFilteredLeads] = useState<ProcessedLead[]>([]);
-  const [stats, setStats] = useState({
+  const isBrowser = typeof window !== "undefined";
+  function handleNavigateToUpload(e: React.MouseEvent<HTMLButtonElement>) { if (e) e.preventDefault(); if (!isBrowser) return; router.push("/upload"); }
+  function handleNavigateToResults(e: React.MouseEvent<HTMLButtonElement>) { if (e) e.preventDefault(); if (!isBrowser) return; router.push("/results"); }
+  const [selectedLead, setSelectedLead] = React.useState<ProcessedLead | null>(null);
+  const [leads, setLeads] = React.useState<any[]>([]);
+  const [filteredLeads, setFilteredLeads] = React.useState<ProcessedLead[]>([]);
+  const [stats, setStats] = React.useState({
     total: 0,
     hot: 0,
     warm: 0,
     cold: 0,
     averageScore: 0,
   });
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isExporting, setIsExporting] = useState(false);
-  const [sortByHighest, setSortByHighest] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'hot' | 'warm' | 'cold'>('all');
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(true);
+  const [isExporting, setIsExporting] = React.useState(false);
+  const [sortByHighest, setSortByHighest] = React.useState(true);
+  const [statusFilter, setStatusFilter] = React.useState<'all' | 'hot' | 'warm' | 'cold'>('all');
 
-  // SSR-safe browser check
-  const isBrowser = typeof window !== "undefined";
-
-  useEffect(() => {
-    if (!isBrowser) return;
-    loadLeads();
-  }, []);
-
-  // --- safeGetLeads helper ---
-  function safeGetLeads() {
-    try {
-      if (typeof window === "undefined") return [];
-      const raw = localStorage.getItem("processedLeads");
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      console.error("Failed to parse leads:", e);
-      return [];
-    }
-  }
+  React.useEffect(() => { if (!isBrowser) return; loadLeads(); }, []);
 
   async function loadLeads() {
     if (!isBrowser) return;
     try {
-      const loaded = safeGetLeads();
-      if (!Array.isArray(loaded) || loaded.length === 0) {
-        setLeads([]);
-        setLoading(false);
-        return;
-      }
-      setLeads(loaded);
+      const raw = localStorage.getItem("leads");
+      if (!raw) { setLeads([]); setLoading(false); return; }
+      const parsed = JSON.parse(raw);
+      setLeads(Array.isArray(parsed) ? parsed : []);
+      setLoading(false);
     } catch (err) {
-      console.error("Results load error:", err);
+      setError("Unable to load leads.");
       setLeads([]);
-    } finally {
       setLoading(false);
     }
   }
@@ -140,7 +121,7 @@ export default function ResultsPage() {
     setStatusFilter(status);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     let filtered = [...leads];
     
     if (statusFilter !== 'all') {

@@ -1,5 +1,6 @@
 'use client';
 
+import React from "react";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -22,6 +23,16 @@ export default function UploadPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   // SSR-safe window check
   const isBrowser = typeof window !== "undefined";
+  function handleNavigateToUpload(e: React.MouseEvent) {
+    if (e) e.preventDefault();
+    if (!isBrowser) return;
+    router.push("/upload");
+  }
+  function handleNavigateToResults(e: React.MouseEvent) {
+    if (e) e.preventDefault();
+    if (!isBrowser) return;
+    router.push("/results");
+  }
   const [uploadType, setUploadType] = useState<'csv' | 'url'>('csv');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [url, setUrl] = useState('');
@@ -124,7 +135,8 @@ export default function UploadPage() {
     }
   };
 
-  const validateUrl = (urlString: string): boolean => {
+  const validateUrl = (urlString: string)
+  : boolean => {
     try {
       if (!urlString || !urlString.trim()) {
         setUrlError('Please enter a valid URL.');
@@ -147,7 +159,7 @@ export default function UploadPage() {
     }
   };
 
-  const handleProcessLeads = async () => {
+  async function handleProcessLeads() {
     if (!isBrowser) return;
     // Check for empty state
     if (uploadType === 'csv' && !selectedFile) {
@@ -558,12 +570,10 @@ export default function UploadPage() {
 
               {/* Process Button */}
               <div className="mt-8 flex justify-center">
-                <Button
-                  size="lg"
+                <button
+                  type="button"
                   onClick={handleProcessLeads}
-                  disabled={isProcessing}
-                  className="text-xl font-semibold px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
-                >
+                  className="text-xl font-semibold px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
                   {isProcessing ? (
                     <>
                       <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -571,10 +581,10 @@ export default function UploadPage() {
                     </>
                   ) : (
                     <>
-                      Process Leads <ArrowRight className="ml-2 h-5 w-5" />
+                      Process Leads →
                     </>
                   )}
-                </Button>
+                </button>
               </div>
             </CardContent>
           </Card>

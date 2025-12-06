@@ -1,5 +1,5 @@
-'use client';
-
+"use client";
+import React from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -13,6 +13,17 @@ import StepsSection from "@/components/StepsSection";
 
 export default function Home() {
   const router = useRouter();
+  const isBrowser = typeof window !== "undefined";
+  function handleNavigateToUpload(e: React.MouseEvent<HTMLButtonElement>) {
+    if (e) e.preventDefault();
+    if (!isBrowser) return;
+    router.push("/upload");
+  }
+  function handleNavigateToResults(e: React.MouseEvent<HTMLButtonElement>) {
+    if (e) e.preventDefault();
+    if (!isBrowser) return;
+    router.push("/results");
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -31,13 +42,14 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col items-center">
-            <Button
-              size="lg"
+            <button
+              type="button"
+              onClick={handleNavigateToUpload}
+              aria-label="Upload Leads"
               className="text-xl font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
-              onClick={() => router.push('/upload')}
             >
-              Upload Leads <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+              Upload Leads →
+            </button>
             <p className="text-sm text-slate-500 mt-4 max-w-md">
               Supports CSV up to 10MB • Public URL import • AI explanations included
             </p>
