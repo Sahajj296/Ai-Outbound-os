@@ -1,6 +1,5 @@
 'use client';
 
-import React from "react";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -23,16 +22,6 @@ export default function UploadPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   // SSR-safe window check
   const isBrowser = typeof window !== "undefined";
-  function handleNavigateToUpload(e: React.MouseEvent) {
-    if (e) e.preventDefault();
-    if (!isBrowser) return;
-    router.push("/upload");
-  }
-  function handleNavigateToResults(e: React.MouseEvent) {
-    if (e) e.preventDefault();
-    if (!isBrowser) return;
-    router.push("/results");
-  }
   const [uploadType, setUploadType] = useState<'csv' | 'url'>('csv');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [url, setUrl] = useState('');
@@ -159,7 +148,7 @@ export default function UploadPage() {
     }
   };
 
-  async function handleProcessLeads() {
+  const handleProcessLeads = async () => {
     if (!isBrowser) return;
     // Check for empty state
     if (uploadType === 'csv' && !selectedFile) {
@@ -570,10 +559,12 @@ export default function UploadPage() {
 
               {/* Process Button */}
               <div className="mt-8 flex justify-center">
-                <button
-                  type="button"
+                <Button
+                  size="lg"
                   onClick={handleProcessLeads}
-                  className="text-xl font-semibold px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  disabled={isProcessing}
+                  className="text-xl font-semibold px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                >
                   {isProcessing ? (
                     <>
                       <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -581,10 +572,10 @@ export default function UploadPage() {
                     </>
                   ) : (
                     <>
-                      Process Leads →
+                      Process Leads <ArrowRight className="ml-2 h-5 w-5" />
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </CardContent>
           </Card>

@@ -1,5 +1,6 @@
-"use client";
-import React from "react";
+'use client';
+
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,38 +12,97 @@ import ScoreExplanationSection from "@/components/ScoreExplanationSection";
 
 export default function ResultsPage() {
   const router = useRouter();
-  const isBrowser = typeof window !== "undefined";
-  function handleNavigateToUpload(e: React.MouseEvent<HTMLButtonElement>) { if (e) e.preventDefault(); if (!isBrowser) return; router.push("/upload"); }
-  function handleNavigateToResults(e: React.MouseEvent<HTMLButtonElement>) { if (e) e.preventDefault(); if (!isBrowser) return; router.push("/results"); }
-  const [selectedLead, setSelectedLead] = React.useState<ProcessedLead | null>(null);
-  const [leads, setLeads] = React.useState<any[]>([]);
-  const [filteredLeads, setFilteredLeads] = React.useState<ProcessedLead[]>([]);
-  const [stats, setStats] = React.useState({
+  const [selectedLead, setSelectedLead] = useState<ProcessedLead | null>(null);
+  const [leads, setLeads] = useState<ProcessedLead[]>([]);
+  const [filteredLeads, setFilteredLeads] = useState<ProcessedLead[]>([]);
+  const [stats, setStats] = useState({
     total: 0,
     hot: 0,
     warm: 0,
     cold: 0,
     averageScore: 0,
   });
-  const [error, setError] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(true);
-  const [isExporting, setIsExporting] = React.useState(false);
-  const [sortByHighest, setSortByHighest] = React.useState(true);
-  const [statusFilter, setStatusFilter] = React.useState<'all' | 'hot' | 'warm' | 'cold'>('all');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
+  const [sortByHighest, setSortByHighest] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'hot' | 'warm' | 'cold'>('all');
 
-  React.useEffect(() => { if (!isBrowser) return; loadLeads(); }, []);
+  // SSR-safe browser check
+  const isBrowser = typeof window !== "undefined";
+
+  useEffect(() => {
+    if (!isBrowser) return;
+    loadLeads();
+  }, []);
+
+  // --- safeGetLeads helper ---
+  function safeGetLeads(): ProcessLeadsResponse | ProcessedLead[] | null {
+    try {
+      if (typeof window === "undefined") return null;
+      const raw = localStorage.getItem("processedLeads");
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      // Handle both ProcessLeadsResponse format and direct array format (backwards compatibility)
+      return parsed;
+    } catch (e) {
+      console.error("Failed to parse leads:", e);
+      return null;
+    }
+  }
 
   async function loadLeads() {
     if (!isBrowser) return;
     try {
-      const raw = localStorage.getItem("leads");
-      if (!raw) { setLeads([]); setLoading(false); return; }
-      const parsed = JSON.parse(raw);
-      setLeads(Array.isArray(parsed) ? parsed : []);
-      setLoading(false);
+      const loaded = safeGetLeads();
+      
+      if (!loaded) {
+        setLeads([]);
+        setStats({ total: 0, hot: 0, warm: 0, cold: 0, averageScore: 0 });
+        return;
+      }
+      
+      // Handle ProcessLeadsResponse format (current format)
+      if (typeof loaded === 'object' && !Array.isArray(loaded) && 'leads' in loaded) {
+        const response = loaded as ProcessLeadsResponse;
+        if (Array.isArray(response.leads) && response.leads.length > 0) {
+          setLeads(response.leads);
+          // Update stats from the response
+          setStats({
+            total: response.total || response.leads.length,
+            hot: response.hot || 0,
+            warm: response.warm || 0,
+            cold: response.cold || 0,
+            averageScore: response.averageScore || 0,
+          });
+        } else {
+          setLeads([]);
+          setStats({ total: 0, hot: 0, warm: 0, cold: 0, averageScore: 0 });
+        }
+      } 
+      // Handle direct array format (backwards compatibility)
+      else if (Array.isArray(loaded) && loaded.length > 0) {
+        const leadsArray = loaded as ProcessedLead[];
+        setLeads(leadsArray);
+        // Calculate stats from leads array
+        const total = leadsArray.length;
+        const hot = leadsArray.filter((l) => l.status === 'hot').length;
+        const warm = leadsArray.filter((l) => l.status === 'warm').length;
+        const cold = leadsArray.filter((l) => l.status === 'cold').length;
+        const averageScore = total > 0 
+          ? Math.round(leadsArray.reduce((sum, l) => sum + l.score, 0) / total)
+          : 0;
+        setStats({ total, hot, warm, cold, averageScore });
+      } 
+      else {
+        setLeads([]);
+        setStats({ total: 0, hot: 0, warm: 0, cold: 0, averageScore: 0 });
+      }
     } catch (err) {
-      setError("Unable to load leads.");
+      console.error("Results load error:", err);
       setLeads([]);
+      setStats({ total: 0, hot: 0, warm: 0, cold: 0, averageScore: 0 });
+    } finally {
       setLoading(false);
     }
   }
@@ -57,7 +117,14 @@ export default function ResultsPage() {
     setError(null);
     
     try {
-      const response = await fetch(`/api/export?format=${format}`);
+      // Send leads data to export API
+      const response = await fetch(`/api/export?format=${format}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ leads: filteredLeads }),
+      });
       
       if (!response.ok) {
         let errorMessage = 'Failed to export leads.';
@@ -110,9 +177,10 @@ export default function ResultsPage() {
   };
 
   const handleSort = () => {
-    setSortByHighest(!sortByHighest);
+    const newSortOrder = !sortByHighest;
+    setSortByHighest(newSortOrder);
     const sorted = [...filteredLeads].sort((a, b) => 
-      sortByHighest ? a.score - b.score : b.score - a.score
+      newSortOrder ? b.score - a.score : a.score - b.score
     );
     setFilteredLeads(sorted);
   };
@@ -121,16 +189,19 @@ export default function ResultsPage() {
     setStatusFilter(status);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     let filtered = [...leads];
     
     if (statusFilter !== 'all') {
       filtered = filtered.filter(lead => lead.status === statusFilter);
     }
     
-    const sorted = filtered.sort((a, b) => b.score - a.score);
+    // Sort by score (highest first by default, or based on sortByHighest state)
+    const sorted = filtered.sort((a, b) => 
+      sortByHighest ? b.score - a.score : a.score - b.score
+    );
     setFilteredLeads(sorted);
-  }, [leads, statusFilter]);
+  }, [leads, statusFilter, sortByHighest]);
 
   const hotLeads = stats.hot;
   const warmLeads = stats.warm;
